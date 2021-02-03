@@ -1,43 +1,56 @@
 package de.ricepuffz.ecosim.scene;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import de.ricepuffz.ecosim.sprite.RiceSprite;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Scene {
-    private List<RiceSprite> sprites = null;
+    private Map<String, SceneLayer> layers;
+    private List<SceneLayer> layersSorted;
 
 
     public Scene() {
-        sprites = new ArrayList<RiceSprite>();
+        layers = new HashMap<>();
+        layersSorted = new ArrayList<>();
     }
 
 
     public void draw(SpriteBatch batch) {
-        for (RiceSprite sprite : sprites) {
-            sprite.draw(batch);
+        for (SceneLayer layer : layersSorted) {
+            layer.draw(batch);
         }
     }
 
     public void tick() {
-        for (RiceSprite sprite : sprites) {
-            sprite.tick();
+        for (SceneLayer layer : layers.values()) {
+            layer.tick();
         }
     }
 
 
-    public void addSprite(RiceSprite sprite) {
-        sprites.add(sprite);
-    }
+    public void addLayer(SceneLayer layer) {
+        layers.put(layer.getName(), layer);
 
-    public RiceSprite getSprite(String name) {
-        for (RiceSprite sprite : sprites) {
-            if (sprite.getName().equals(name))
-                return sprite;
+        int i = 0;
+        boolean layerAdded = false;
+        while (i < layersSorted.size()) {
+            if (layer.getPosition() < layersSorted.get(i).getPosition()) {
+                layersSorted.add(i, layer);
+                layerAdded = true;
+                break;
+            }
+
+            i++;
         }
 
-        return null;
+        if (!layerAdded)
+            layersSorted.add(layer);
+    }
+
+    public SceneLayer getLayer(String name) {
+        return layers.get(name);
     }
 }

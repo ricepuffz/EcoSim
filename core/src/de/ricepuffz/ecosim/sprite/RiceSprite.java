@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import de.ricepuffz.ecosim.ITickable;
 
 public abstract class RiceSprite extends Sprite implements ITickable {
-    private String name = null;
+    private String name;
 
     public RiceSprite(String name, Texture texture) {
         super(texture);
@@ -14,7 +14,12 @@ public abstract class RiceSprite extends Sprite implements ITickable {
     }
 
     @Override
-    public abstract void tick();
+    public void tick() {
+        onTick();
+    }
+
+    @Override
+    public abstract void onTick();
 
     public String getName() {
         return name;

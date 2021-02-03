@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TextureRegistry {
-    private static Map<String, Texture> textures = new HashMap<String, Texture>();
+    private static Map<String, Texture> textures = new HashMap<>();
 
 
     private TextureRegistry() { }
@@ -31,6 +31,7 @@ public class TextureRegistry {
 
 
     public static void registerStandardTextures() {
-        registerTexture(new Texture("hecc.png"), "hecc");
+        registerTexture(new Texture("textures/hecc.png"), "hecc");
+        registerTexture(new Texture("textures/pixel.png"), "pixel");
     }
 }

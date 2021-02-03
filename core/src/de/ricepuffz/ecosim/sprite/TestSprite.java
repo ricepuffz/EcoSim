@@ -11,22 +11,17 @@ public class TestSprite extends RiceSprite implements ITickable {
 
     public TestSprite(String name) {
         super(name, texture);
-
-        this.setX(80F);
-        this.setY(40F);
     }
 
     @Override
-    public void tick() {
+    public void onTick() {
         if (rising) {
-            this.setX(this.getX() + 0.3F);
-            this.setY(this.getY() + 0.1F);
-            if (this.getX() >= 180)
+            this.translate(0.3F, 0.1F);
+            if (this.getX() >= 10)
                 rising = false;
         } else {
-            this.setX(this.getX() - 0.3F);
-            this.setY(this.getY() - 0.1F);
-            if (this.getX() <= 80)
+            this.translate(-0.3F, -0.1F);
+            if (this.getX() <= -10)
                 rising = true;
         }
 
