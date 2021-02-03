@@ -1,5 +1,6 @@
 package de.ricepuffz.ecosim.sprite;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import de.ricepuffz.ecosim.ITickable;
 import de.ricepuffz.ecosim.registry.TextureRegistry;
@@ -15,16 +16,21 @@ public class TestSprite extends RiceSprite implements ITickable {
 
     @Override
     public void onTick() {
+        float deltaTime = Gdx.graphics.getDeltaTime();
+
+        float horizontalMovement = 60F * deltaTime;
+        float verticalMovement = 20F * deltaTime;
+
         if (rising) {
-            this.translate(0.3F, 0.1F);
-            if (this.getX() >= 10)
+            this.translate(horizontalMovement, verticalMovement);
+            if (this.getX() >= 100)
                 rising = false;
         } else {
-            this.translate(-0.3F, -0.1F);
-            if (this.getX() <= -10)
+            this.translate(-horizontalMovement, -verticalMovement);
+            if (this.getX() <= -100)
                 rising = true;
         }
 
-        this.rotate(0.1F);
+        this.rotate(100F * deltaTime);
     }
 }
