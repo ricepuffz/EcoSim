@@ -3,6 +3,7 @@ package de.ricepuffz.ecosim.sprite;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import de.ricepuffz.ecosim.ITickable;
+import de.ricepuffz.ecosim.Util;
 import de.ricepuffz.ecosim.registry.TextureRegistry;
 
 public class TestSprite extends RiceSprite implements ITickable {
@@ -16,7 +17,7 @@ public class TestSprite extends RiceSprite implements ITickable {
 
     @Override
     public void onTick() {
-        float deltaTime = Gdx.graphics.getDeltaTime();
+        float deltaTime = Util.deltaTime();
 
         float horizontalMovement = 60F * deltaTime;
         float verticalMovement = 20F * deltaTime;
