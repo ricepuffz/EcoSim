@@ -38,6 +38,14 @@ public class InputHandler implements InputProcessor {
             case Input.Keys.A:
                 main.movingLeft = true;
                 break;
+            case Input.Keys.R:
+                scrolledTotal = 0F;
+                ((OrthographicCamera) main.camera).zoom = 1F;
+                break;
+            case Input.Keys.E:
+                main.camera.position.x = 0;
+                main.camera.position.y = 0;
+                break;
         }
 
         return true;
@@ -82,9 +90,6 @@ public class InputHandler implements InputProcessor {
 
             ClickMarkerSprite sprite = (ClickMarkerSprite) (main.scene.getLayer("debug").getSprite("clickMarker"));
             sprite.click(main.lastClickPositionWorld);
-        } else if (button == Input.Buttons.MIDDLE) {
-            scrolledTotal = 0F;
-            ((OrthographicCamera) main.camera).zoom = 1F;
         }
 
         return true;

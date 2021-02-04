@@ -121,12 +121,19 @@ public class EcoSim extends ApplicationAdapter {
 
 		sr.setColor(1F, 1F, 1F, 0.1F);
 
-		for (int i = -1000; i < 1001; i++)
+		for (int i = -1000; i < 1001; i++) {
+			if (i % 3 == 0)
+				sr.setColor(1F, 1F, 1F, 0.3F);
+
 			sr.line(new Vector2(i * 100F, -100000F), new Vector2(i * 100F, 100000));
-		for (int i = -1000; i < 1001; i++)
 			sr.line(new Vector2(-100000F, i * 100F), new Vector2(100000, i * 100F));
 
+			if (i % 3 == 0)
+				sr.setColor(1F, 1F, 1F, 0.1F);
+		}
 
+
+		Gdx.gl.glLineWidth(2);
 		sr.setColor(1F, 1F, 1F, 0.3F);
 		sr.line(new Vector2(0F, -100000F), new Vector2(0F, 100000F));
 		sr.line(new Vector2(-100000F, 0F), new Vector2(100000F, 0F));
@@ -157,10 +164,11 @@ public class EcoSim extends ApplicationAdapter {
 
 
 		String controlsHintString = "WASD or Arrows: Move camera\n" +
-				"Shift (hold): Faster camera movement\n" +
-				"Left Click: Move/Drag test box\n" +
-				"Scroll: Zoom in/out\n" +
-				"Scrollwheel press: Reset zoom";
+									"Shift (hold): Faster camera movement\n" +
+									"Left Click: Move/Drag test box\n" +
+									"Scroll: Zoom in/out\n" +
+									"R: Reset zoom\n" +
+									"E: Reset camera position";
 
 		GlyphLayout gl = new GlyphLayout(arial.get16(), controlsHintString);
 		arial.get16().draw(hud, controlsHintString, 5, gl.height + 5);
@@ -203,6 +211,15 @@ public class EcoSim extends ApplicationAdapter {
 
 	public void updateLastClickPositionWorld() {
 		lastClickPositionWorld = camera.unproject(new Vector3(lastClickLocation.x, lastClickLocation.y, 0F));
+	}
+
+	@Override
+	public void resize(int width, int height) {
+		camera.viewportWidth = width;
+		camera.viewportHeight = height;
+		camera.update();
+
+		hud.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 	
 	@Override
