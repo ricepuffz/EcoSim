@@ -1,6 +1,5 @@
 package de.ricepuffz.ecosim.sprite;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import de.ricepuffz.ecosim.ITickable;
 import de.ricepuffz.ecosim.Util;
@@ -13,6 +12,9 @@ public class TestSprite extends RiceSprite implements ITickable {
 
     public TestSprite(String name) {
         super(name, texture);
+
+        this.setMiddleX(0);
+        this.setMiddleY(0);
     }
 
     @Override
@@ -24,11 +26,11 @@ public class TestSprite extends RiceSprite implements ITickable {
 
         if (rising) {
             this.translate(horizontalMovement, verticalMovement);
-            if (this.getX() >= 100)
+            if (this.getMiddleX() >= 100)
                 rising = false;
         } else {
             this.translate(-horizontalMovement, -verticalMovement);
-            if (this.getX() <= -100)
+            if (this.getMiddleX() <= -100)
                 rising = true;
         }
 
