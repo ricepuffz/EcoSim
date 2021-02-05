@@ -1,0 +1,25 @@
+apply plugin: "java"
+
+sourceCompatibility = 1.7
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+sourceSets.main.java.srcDirs = [ "src/" ]
+
+task distHtml(type: GradleBuild) {
+    buildFile = '../html/build.gradle'
+    tasks = ['dist']
+}
+
+task deploy() {
+    dependsOn "distHtml"
+
+    finalizedBy "deployWithoutRebuild"
+}
+
+task deployWithoutRebuild(type: JavaExec) {
+    group = "Execution"
+    description = "Run the main class with JavaExecTask"
+
+    classpath = sourceSets.main.runtimeClasspath
+    main = "de.ricepuffz.ftpdeployer.FTPPublisher"
+}

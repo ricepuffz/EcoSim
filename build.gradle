@@ -39,6 +39,15 @@ allprojects {
     }
 }
 
+project(":ftpdeployer") {
+    apply plugin: "java-library"
+
+
+    dependencies {
+        compile 'commons-net:commons-net:3.7.2'
+    }
+}
+
 project(":desktop") {
     apply plugin: "java-library"
 
@@ -59,7 +68,7 @@ project(":html") {
 
 
     dependencies {
-        implementation project(":core")
+        implementation (project(":core"))
         api "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
         api "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
         api "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"

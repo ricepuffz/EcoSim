@@ -146,7 +146,7 @@ public class EcoSim extends ApplicationAdapter {
 
 		scene.draw(batch);
 
-		arial.get32().draw(batch, "fuck you", scene.getLayer("test").getSprite("hecc").getX() + scene.getLayer("test").getSprite("hecc").getWidth() / 2,
+		arial.get32().draw(batch, "fuck", scene.getLayer("test").getSprite("hecc").getX() + scene.getLayer("test").getSprite("hecc").getWidth() / 2,
 				scene.getLayer("test").getSprite("hecc").getY() + 250);
 
 		batch.end();
