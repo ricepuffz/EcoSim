@@ -1,21 +1,22 @@
 package de.ricepuffz.ecosim.input;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
-import de.ricepuffz.ecosim.EcoSim;
-import de.ricepuffz.ecosim.sprite.ClickMarkerSprite;
+import de.ricepuffz.ecosim.engine.scene.object.sprite.ClickMarkerSprite;
+import de.ricepuffz.ecosim.scene.testscene.TestScene;
 
-public class InputHandler implements InputProcessor {
-    private EcoSim main;
+public class TestInputHandler implements InputProcessor {
+    private TestScene scene;
 
     private float scrolledTotal = 0F;
     public boolean leftMousePressed = false;
 
 
-    public InputHandler(EcoSim main) {
-        this.main = main;
+    public TestInputHandler(TestScene scene) {
+        this.scene = scene;
     }
 
 
@@ -24,27 +25,30 @@ public class InputHandler implements InputProcessor {
         switch (keycode) {
             case Input.Keys.UP:
             case Input.Keys.W:
-                main.movingUp = true;
+                scene.movingUp = true;
                 break;
             case Input.Keys.DOWN:
             case Input.Keys.S:
-                main.movingDown = true;
+                scene.movingDown = true;
                 break;
             case Input.Keys.RIGHT:
             case Input.Keys.D:
-                main.movingRight = true;
+                scene.movingRight = true;
                 break;
             case Input.Keys.LEFT:
             case Input.Keys.A:
-                main.movingLeft = true;
+                scene.movingLeft = true;
                 break;
             case Input.Keys.R:
                 scrolledTotal = 0F;
-                ((OrthographicCamera) main.camera).zoom = 1F;
+                ((OrthographicCamera) scene.camera).zoom = 1F;
                 break;
             case Input.Keys.E:
-                main.camera.position.x = 0;
-                main.camera.position.y = 0;
+                scene.camera.position.x = 0;
+                scene.camera.position.y = 0;
+                break;
+            case Input.Keys.ESCAPE:
+                Gdx.app.exit();
                 break;
         }
 
@@ -56,19 +60,19 @@ public class InputHandler implements InputProcessor {
         switch (keycode) {
             case Input.Keys.UP:
             case Input.Keys.W:
-                main.movingUp = false;
+                scene.movingUp = false;
                 break;
             case Input.Keys.DOWN:
             case Input.Keys.S:
-                main.movingDown = false;
+                scene.movingDown = false;
                 break;
             case Input.Keys.RIGHT:
             case Input.Keys.D:
-                main.movingRight = false;
+                scene.movingRight = false;
                 break;
             case Input.Keys.LEFT:
             case Input.Keys.A:
-                main.movingLeft = false;
+                scene.movingLeft = false;
                 break;
         }
 
@@ -85,11 +89,11 @@ public class InputHandler implements InputProcessor {
         if (button == Input.Buttons.LEFT) {
             leftMousePressed = true;
 
-            main.lastClickLocation = new Vector2(screenX, screenY);
-            main.updateLastClickPositionWorld();
+            scene.lastClickLocation = new Vector2(screenX, screenY);
+            scene.updateLastClickPositionWorld();
 
-            ClickMarkerSprite sprite = (ClickMarkerSprite) (main.scene.getLayer("debug").getSprite("clickMarker"));
-            sprite.click(main.lastClickPositionWorld);
+            ClickMarkerSprite sprite = (ClickMarkerSprite) (scene.getLayer("debug").getActor("clickMarker"));
+            sprite.click(scene.lastClickPositionWorld);
         }
 
         return true;
@@ -106,11 +110,11 @@ public class InputHandler implements InputProcessor {
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         if (leftMousePressed) {
-            main.lastClickLocation = new Vector2(screenX, screenY);
-            main.updateLastClickPositionWorld();
+            scene.lastClickLocation = new Vector2(screenX, screenY);
+            scene.updateLastClickPositionWorld();
 
-            ClickMarkerSprite sprite = (ClickMarkerSprite) (main.scene.getLayer("debug").getSprite("clickMarker"));
-            sprite.click(main.lastClickPositionWorld);
+            ClickMarkerSprite sprite = (ClickMarkerSprite) (scene.getLayer("debug").getActor("clickMarker"));
+            sprite.click(scene.lastClickPositionWorld);
         }
 
         return true;
@@ -162,17 +166,17 @@ public class InputHandler implements InputProcessor {
 
 
 
-            OrthographicCamera camera = (OrthographicCamera) main.camera;
+            OrthographicCamera camera = (OrthographicCamera) scene.camera;
             camera.zoom += actualAmount / 10F;
 
             camera.update();
 
 
             if (leftMousePressed) {
-                main.updateLastClickPositionWorld();
+                scene.updateLastClickPositionWorld();
 
-                ClickMarkerSprite sprite = (ClickMarkerSprite) (main.scene.getLayer("debug").getSprite("clickMarker"));
-                sprite.click(main.lastClickPositionWorld);
+                ClickMarkerSprite sprite = (ClickMarkerSprite) (scene.getLayer("debug").getActor("clickMarker"));
+                sprite.click(scene.lastClickPositionWorld);
             }
         }
 

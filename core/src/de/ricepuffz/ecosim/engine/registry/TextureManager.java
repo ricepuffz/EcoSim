@@ -1,15 +1,15 @@
-package de.ricepuffz.ecosim.registry;
+package de.ricepuffz.ecosim.engine.registry;
 
 import com.badlogic.gdx.graphics.Texture;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class TextureRegistry {
+public class TextureManager {
     private static Map<String, Texture> textures = new HashMap<>();
 
 
-    private TextureRegistry() { }
+    private TextureManager() { }
 
 
     public static void registerTexture(Texture texture, String name) {
@@ -23,9 +23,9 @@ public class TextureRegistry {
     }
 
     public static void dispose() {
-        for (String name : (String[]) textures.keySet().toArray()) {
-            textures.get(name).dispose();
-            textures.remove(name);
+        for (Object key : textures.keySet().toArray()) {
+            textures.get(key).dispose();
+            textures.remove(key);
         }
     }
 

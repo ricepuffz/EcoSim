@@ -1,5 +1,7 @@
-package de.ricepuffz.ecosim.scene;
+package de.ricepuffz.ecosim.engine.scene;
 
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.util.ArrayList;
@@ -7,9 +9,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Scene {
+public abstract class Scene {
     private Map<String, SceneLayer> layers;
     private List<SceneLayer> layersSorted;
+
+    public Camera camera = null;
 
 
     public Scene() {
@@ -18,15 +22,26 @@ public class Scene {
     }
 
 
-    public void draw(SpriteBatch batch) {
+    public abstract void onRender();
+
+    public abstract InputProcessor getInputProcessor();
+
+
+    public void draw() {
         for (SceneLayer layer : layersSorted) {
-            layer.draw(batch);
+            layer.draw();
         }
     }
 
     public void tick() {
         for (SceneLayer layer : layers.values()) {
             layer.tick();
+        }
+    }
+
+    public void onResize() {
+        for (SceneLayer layer : layers.values()) {
+            layer.onResize();
         }
     }
 

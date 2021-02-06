@@ -2,73 +2,36 @@ package de.ricepuffz.ecosim;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import de.ricepuffz.ecosim.font.Font;
-import de.ricepuffz.ecosim.input.InputHandler;
-import de.ricepuffz.ecosim.registry.FontRegistry;
-import de.ricepuffz.ecosim.registry.TextureRegistry;
-import de.ricepuffz.ecosim.scene.Scene;
-import de.ricepuffz.ecosim.scene.SceneLayer;
-import de.ricepuffz.ecosim.sprite.ClickMarkerSprite;
-import de.ricepuffz.ecosim.sprite.TestSprite;
-
-import java.math.BigDecimal;
+import de.ricepuffz.ecosim.engine.registry.FontManager;
+import de.ricepuffz.ecosim.engine.registry.SceneManager;
+import de.ricepuffz.ecosim.engine.registry.TextureManager;
+import de.ricepuffz.ecosim.engine.scene.Scene;
+import de.ricepuffz.ecosim.scene.testscene.TestScene;
 
 public class EcoSim extends ApplicationAdapter {
-	private long lastTickTime;
-
 	private SpriteBatch batch;
-	private SpriteBatch hud;
-	private Font arial;
-	public Scene scene = null;
-	public Camera camera = null;
-	private InputHandler inputHandler = null;
+	private SpriteBatch hudBatch;
 
-	private int fpsCounter = 0;
-	private long lastFpsPrint = System.currentTimeMillis();
-	private String fpsCounterValue = "";
+	private Scene currentScene = null;
 
-	private float cameraSpeed = 300F;
-	private float zoomingCameraSpeedModifier = 10000F;
-	public boolean movingUp, movingDown, movingLeft, movingRight;
-	public Vector2 lastClickLocation = new Vector2(0F, 0F);
-	public Vector3 lastClickPositionWorld = new Vector3(0F, 0F, 0F);
 
 	@Override
 	public void create () {
-		lastTickTime = System.currentTimeMillis();
-
-		TextureRegistry.registerStandardTextures();
-		FontRegistry.registerStandardFonts();
+		TextureManager.registerStandardTextures();
+		FontManager.registerStandardFonts();
 
 		batch = new SpriteBatch();
-		hud = new SpriteBatch();
+		hudBatch = new SpriteBatch();
 
-		arial = new Font("arial");
-		scene = new Scene();
-		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		currentScene = new TestScene(this);
+		SceneManager.registerScene(currentScene, "test");
 
-		SceneLayer layer = new SceneLayer("test", 1);
-		layer.addSprite(new TestSprite("hecc"));
-		scene.addLayer(layer);
+		currentScene.camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-		SceneLayer debugLayer = new SceneLayer("debug", 1000000);
-		debugLayer.addSprite(new ClickMarkerSprite("clickMarker"));
-		scene.addLayer(debugLayer);
-
-		inputHandler = new InputHandler(this);
-		Gdx.input.setInputProcessor(inputHandler);
+		Gdx.input.setInputProcessor(currentScene.getInputProcessor());
 	}
 
 	@Override
@@ -77,154 +40,37 @@ public class EcoSim extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT |
 				(Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
 
-		scene.tick();
+		currentScene.onRender();
 
-		float horizontalCameraMovement = 0F;
-		float verticalCameraMovement = 0F;
+		batch.setProjectionMatrix(currentScene.camera.combined);
 
-		boolean shifting = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT);
-
-		cameraSpeed *= ((OrthographicCamera) camera).zoom;
-		if (shifting)
-			cameraSpeed *= 2F;
-
-		if (movingUp)
-			verticalCameraMovement += cameraSpeed * Util.deltaTime();
-		if (movingDown)
-			verticalCameraMovement -= cameraSpeed * Util.deltaTime();
-		if (movingRight)
-			horizontalCameraMovement += cameraSpeed * Util.deltaTime();
-		if (movingLeft)
-			horizontalCameraMovement -= cameraSpeed * Util.deltaTime();
-
-		if (shifting)
-			cameraSpeed /= 2F;
-		cameraSpeed /= ((OrthographicCamera) camera).zoom;
-
-		camera.translate(horizontalCameraMovement, verticalCameraMovement, 0F);
-		camera.update();
-
-
-		if (inputHandler.leftMousePressed && (movingUp || movingDown || movingRight || movingLeft)) {
-			updateLastClickPositionWorld();
-
-			ClickMarkerSprite sprite = (ClickMarkerSprite) (scene.getLayer("debug").getSprite("clickMarker"));
-			sprite.click(lastClickPositionWorld);
-		}
-
-
-		ShapeRenderer sr = new ShapeRenderer();
-		Gdx.gl.glLineWidth(1F);
-		sr.setProjectionMatrix(camera.combined);
-		Gdx.gl.glEnable(Gdx.gl.GL_BLEND);
-		sr.begin(ShapeRenderer.ShapeType.Line);
-
-		sr.setColor(1F, 1F, 1F, 0.1F);
-
-		for (int i = -1000; i < 1001; i++) {
-			if (i % 3 == 0)
-				sr.setColor(1F, 1F, 1F, 0.3F);
-
-			sr.line(new Vector2(i * 100F, -100000F), new Vector2(i * 100F, 100000));
-			sr.line(new Vector2(-100000F, i * 100F), new Vector2(100000, i * 100F));
-
-			if (i % 3 == 0)
-				sr.setColor(1F, 1F, 1F, 0.1F);
-		}
-
-
-		Gdx.gl.glLineWidth(2);
-		sr.setColor(1F, 1F, 1F, 0.3F);
-		sr.line(new Vector2(0F, -100000F), new Vector2(0F, 100000F));
-		sr.line(new Vector2(-100000F, 0F), new Vector2(100000F, 0F));
-		sr.end();
-		Gdx.gl.glDisable(Gdx.gl.GL_BLEND);
-
-
-		batch.setProjectionMatrix(camera.combined);
-		batch.begin();
-
-		scene.draw(batch);
-
-		arial.get32().draw(batch, "fuck", scene.getLayer("test").getSprite("hecc").getX() + scene.getLayer("test").getSprite("hecc").getWidth() / 2,
-				scene.getLayer("test").getSprite("hecc").getY() + 250);
-
-		batch.end();
-
-
-		hud.begin();
-
-		fpsCounter++;
-
-		if (lastFpsPrint + 1000 <= System.currentTimeMillis()) {
-			fpsCounterValue = "FPS: " + fpsCounter;
-			fpsCounter = 0;
-			lastFpsPrint = System.currentTimeMillis();
-		}
-
-
-		String controlsHintString = "WASD or Arrows: Move camera\n" +
-									"Shift (hold): Faster camera movement\n" +
-									"Left Click: Move/Drag test box\n" +
-									"Scroll: Zoom in/out\n" +
-									"R: Reset zoom\n" +
-									"E: Reset camera position";
-
-		GlyphLayout gl = new GlyphLayout(arial.get16(), controlsHintString);
-		arial.get16().draw(hud, controlsHintString, 5, gl.height + 5);
-
-
-		arial.get16().draw(hud, fpsCounterValue, 5, Gdx.graphics.getHeight() - 5);
-
-		String cameraPositionString = "Camera: x=" + (int) camera.position.x + " | y=" + (int) camera.position.y;
-		GlyphLayout glyph = new GlyphLayout(arial.get16(), cameraPositionString);
-		arial.get16().draw(hud, cameraPositionString, Gdx.graphics.getWidth() - glyph.width - 5,
-				Gdx.graphics.getHeight() - 5);
-
-		String lastClickPositionScreenString = "Click Screen: x=" + (int) lastClickLocation.x + " | y=" + (int) lastClickLocation.y;
-		GlyphLayout glyph2 = new GlyphLayout(arial.get16(), lastClickPositionScreenString);
-		arial.get16().draw(hud, lastClickPositionScreenString, Gdx.graphics.getWidth() - glyph2.width - 5,
-				Gdx.graphics.getHeight() - glyph.height - 15);
-
-		String lastClickPositionWorldString = "Click World: x=" + (int) lastClickPositionWorld.x + " | y=" + (int) lastClickPositionWorld.y;
-		GlyphLayout glyph3 = new GlyphLayout(arial.get16(), lastClickPositionWorldString);
-		arial.get16().draw(hud, lastClickPositionWorldString, Gdx.graphics.getWidth() - glyph3.width - 5,
-				Gdx.graphics.getHeight() - glyph.height - glyph2.height - 20);
-
-		/*
-		NumberFormat nf = NumberFormat.getInstance();
-		nf.setMaximumFractionDigits(4);
-		*/
-
-		String zoomAmountString = "Zoom: ";
-
-		BigDecimal bd = new BigDecimal(Float.toString(1F - (((OrthographicCamera) camera).zoom)));
-		bd = bd.setScale(3, BigDecimal.ROUND_HALF_UP);
-		zoomAmountString += bd.floatValue();
-
-		GlyphLayout glyph4 = new GlyphLayout(arial.get16(), zoomAmountString);
-		arial.get16().draw(hud, zoomAmountString, Gdx.graphics.getWidth() - glyph4.width - 5,
-				Gdx.graphics.getHeight() - glyph.height - glyph2.height - glyph3.height - 30);
-
-		hud.end();
-	}
-
-	public void updateLastClickPositionWorld() {
-		lastClickPositionWorld = camera.unproject(new Vector3(lastClickLocation.x, lastClickLocation.y, 0F));
+		currentScene.tick();
+		currentScene.draw();
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		camera.viewportWidth = width;
-		camera.viewportHeight = height;
-		camera.update();
+		currentScene.camera.viewportWidth = width;
+		currentScene.camera.viewportHeight = height;
+		currentScene.camera.update();
 
-		hud.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		hudBatch.getProjectionMatrix().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+		SceneManager.onResize();
 	}
 	
 	@Override
 	public void dispose () {
 		batch.dispose();
-		TextureRegistry.dispose();
+		hudBatch.dispose();
+		TextureManager.dispose();
+		FontManager.dispose();
+	}
+
+	public SpriteBatch getBatch() {
+		return batch;
+	}
+	public SpriteBatch getHudBatch() {
+		return hudBatch;
 	}
 }

@@ -1,12 +1,12 @@
-package de.ricepuffz.ecosim.sprite;
+package de.ricepuffz.ecosim.engine.scene.object.sprite;
 
 import com.badlogic.gdx.graphics.Texture;
-import de.ricepuffz.ecosim.ITickable;
-import de.ricepuffz.ecosim.Util;
-import de.ricepuffz.ecosim.registry.TextureRegistry;
+import de.ricepuffz.ecosim.engine.scene.ITickable;
+import de.ricepuffz.ecosim.engine.Util;
+import de.ricepuffz.ecosim.engine.registry.TextureManager;
 
 public class TestSprite extends RiceSprite implements ITickable {
-    private static Texture texture = TextureRegistry.getTexture("hecc");
+    private static Texture texture = TextureManager.getTexture("hecc");
 
     private boolean rising = true;
 

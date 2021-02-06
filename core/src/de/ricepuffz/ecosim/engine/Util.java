@@ -1,4 +1,4 @@
-package de.ricepuffz.ecosim;
+package de.ricepuffz.ecosim.engine;
 
 import com.badlogic.gdx.Gdx;
 

@@ -1,17 +1,14 @@
-package de.ricepuffz.ecosim.sprite;
+package de.ricepuffz.ecosim.engine.scene.object.sprite;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector3;
-import de.ricepuffz.ecosim.ITickable;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import de.ricepuffz.ecosim.engine.scene.IDrawable;
+import de.ricepuffz.ecosim.engine.scene.ITickable;
 
-public abstract class RiceSprite extends Sprite implements ITickable {
-    private String name;
-
+public abstract class RiceSprite extends SpriteActor implements ITickable, IDrawable {
     public RiceSprite(String name, Texture texture) {
-        super(texture);
-
-        this.name = name;
+        super(name, texture);
     }
 
     @Override
@@ -21,6 +18,10 @@ public abstract class RiceSprite extends Sprite implements ITickable {
 
     @Override
     public abstract void onTick();
+
+    public void draw(SpriteBatch batch) {
+        ((Sprite) this).draw(batch);
+    }
 
     public String getName() {
         return name;

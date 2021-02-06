@@ -1,12 +1,12 @@
-package de.ricepuffz.ecosim.sprite;
+package de.ricepuffz.ecosim.engine.scene.object.sprite;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
-import de.ricepuffz.ecosim.registry.TextureRegistry;
+import de.ricepuffz.ecosim.engine.registry.TextureManager;
 
 public class ClickMarkerSprite extends RiceSprite {
-    private static Texture texture = TextureRegistry.getTexture("pixel");
+    private static Texture texture = TextureManager.getTexture("pixel");
 
     public ClickMarkerSprite(String name) {
         super(name, texture);
