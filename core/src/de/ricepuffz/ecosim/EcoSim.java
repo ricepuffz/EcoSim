@@ -9,6 +9,7 @@ import de.ricepuffz.ecosim.engine.registry.FontManager;
 import de.ricepuffz.ecosim.engine.registry.SceneManager;
 import de.ricepuffz.ecosim.engine.registry.TextureManager;
 import de.ricepuffz.ecosim.engine.scene.Scene;
+import de.ricepuffz.ecosim.engine.ui.UIManager;
 import de.ricepuffz.ecosim.scene.testscene.TestScene;
 
 public class EcoSim extends ApplicationAdapter {
@@ -46,6 +47,12 @@ public class EcoSim extends ApplicationAdapter {
 
 		currentScene.tick();
 		currentScene.draw();
+
+		UIManager currentUIManager = currentScene.uiManager;
+		if (currentUIManager != null) {
+			currentUIManager.tick();
+			currentUIManager.draw();
+		}
 	}
 
 	@Override

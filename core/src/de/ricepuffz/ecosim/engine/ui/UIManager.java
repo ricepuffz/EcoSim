@@ -1,54 +1,41 @@
-package de.ricepuffz.ecosim.engine.scene;
-
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import de.ricepuffz.ecosim.engine.ui.UIManager;
+package de.ricepuffz.ecosim.engine.ui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class Scene {
-    private Map<String, SceneLayer> layers;
-    private List<SceneLayer> layersSorted;
-
-    public UIManager uiManager = null;
-    public Camera camera = null;
+public class UIManager {
+    private Map<String, UILayer> layers;
+    private List<UILayer> layersSorted;
 
 
-    public Scene() {
+    public UIManager() {
         layers = new HashMap<>();
         layersSorted = new ArrayList<>();
     }
 
 
-    public abstract void onRender();
-
-    public abstract InputProcessor getInputProcessor();
-
-
     public void draw() {
-        for (SceneLayer layer : layersSorted) {
+        for (UILayer layer : layersSorted) {
             layer.draw();
         }
     }
 
     public void tick() {
-        for (SceneLayer layer : layers.values()) {
+        for (UILayer layer : layers.values()) {
             layer.tick();
         }
     }
 
     public void onResize() {
-        for (SceneLayer layer : layers.values()) {
+        for (UILayer layer : layers.values()) {
             layer.onResize();
         }
     }
 
 
-    public void addLayer(SceneLayer layer) {
+    public void addLayer(UILayer layer) {
         layers.put(layer.getName(), layer);
 
         int i = 0;
@@ -67,7 +54,7 @@ public abstract class Scene {
             layersSorted.add(layer);
     }
 
-    public SceneLayer getLayer(String name) {
+    public UILayer getLayer(String name) {
         return layers.get(name);
     }
 }

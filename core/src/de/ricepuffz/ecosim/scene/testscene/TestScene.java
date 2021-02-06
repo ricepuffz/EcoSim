@@ -14,6 +14,7 @@ import de.ricepuffz.ecosim.engine.scene.Scene;
 import de.ricepuffz.ecosim.engine.scene.SceneLayer;
 import de.ricepuffz.ecosim.engine.scene.object.sprite.ClickMarkerSprite;
 import de.ricepuffz.ecosim.engine.scene.object.sprite.TestSprite;
+import de.ricepuffz.ecosim.scene.testscene.ui.TestUIManager;
 
 public class TestScene extends Scene {
     private EcoSim main;
@@ -33,16 +34,17 @@ public class TestScene extends Scene {
         this.main = main;
 
         testInputHandler = new TestInputHandler(this);
+        uiManager = new TestUIManager(main);
 
         initScene();
     }
 
 
     private void initScene() {
-        SceneLayer layer = new SceneLayer(main, "test", 1);
-        this.addLayer(layer);
-        layer.addActor(new TestSprite("hecc"));
-        layer.addActor(new FuckText(this));
+        SceneLayer testLayer = new SceneLayer(main, "test", 1);
+        this.addLayer(testLayer);
+        testLayer.addActor(new TestSprite("hecc"));
+        testLayer.addActor(new FuckText(this));
 
 
         SceneLayer debugLayer = new SceneLayer(main, "debug", 100000);
